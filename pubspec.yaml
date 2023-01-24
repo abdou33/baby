@@ -70,6 +70,13 @@ flutter:
     - assets/boardingscreen/arrow.png
     - assets/babyboy.png
     - assets/babygirl.png
+    - assets/db/food.json
+    - assets/db/dishes.json
+    - assets/vegetables.jpg
+    - assets/dishes.jpeg
+    - assets/wrong.png
+    - assets/right.png
+    - assets/food/apple.jpeg
     
 
 

@@ -32,7 +32,7 @@ class _BorndateState extends State<Borndate> {
     await prefs.setString('gender', g);
     print("done");
     if(prefs.getInt('date') != null && prefs.getString('gender') != null){
-      Navigator.push(context,MaterialPageRoute(builder: (context) => Home()));
+      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
