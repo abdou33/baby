@@ -72,11 +72,13 @@ flutter:
     - assets/babygirl.png
     - assets/db/food.json
     - assets/db/dishes.json
+    - assets/db/mouvements.json
     - assets/vegetables.jpg
     - assets/dishes.jpeg
     - assets/wrong.png
     - assets/right.png
     - assets/food/apple.jpeg
+    - assets/mouvements.jpeg
     
 
 

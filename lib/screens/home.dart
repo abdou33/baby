@@ -1,6 +1,5 @@
+import 'package:baby/screens/mouvements_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dishes_list.dart';
@@ -61,117 +60,151 @@ class _HomeState extends State<Home> {
               backgroundColor:
                   gender! == "male" ? Colors.blue[100] : Colors.pink[100],
             ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(),
-                    ),
-                    Text("عمر طفلك :",
-                        textDirection: TextDirection.rtl,
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold)),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              child: years <= 0
-                                  ? Text("")
-                                  : Text("$years سنوات",
-                                      textDirection: TextDirection.rtl,
-                                      style: TextStyle(fontSize: 25))),
-                          Container(
-                              child: months <= 0
-                                  ? Text("")
-                                  : Text("$months أشهر",
-                                      textDirection: TextDirection.rtl,
-                                      style: TextStyle(fontSize: 25))),
-                          Container(
-                              child: days <= 0
-                                  ? Text("")
-                                  : Text("$days أيام",
-                                      textDirection: TextDirection.rtl,
-                                      style: TextStyle(fontSize: 25))),
-                        ],
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(),
                       ),
-                    )
-                  ],
-                ),
-                //food
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    child: Container(
-                      width: width,
-                      height: width / 2,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.black,
-                        ),
-                        image: DecorationImage(
-                          image: AssetImage("assets/vegetables.jpg"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text("الأطعمة المسموحة",
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                backgroundColor: Colors.white)),
-                      ),
-                    ),
-                    onTap: (() {
-                      Navigator.push(context,MaterialPageRoute(builder: (context) => FoodList(monthsage: years*12+months,)));
-                    }),
+                      Text("عمر طفلك :",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                ),
-                //dishes
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    child: Container(
-                      width: width,
-                      height: width / 2,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.black,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                child: years <= 0
+                                    ? Text("")
+                                    : Text("$years سنوات",
+                                        textDirection: TextDirection.rtl,
+                                        style: TextStyle(fontSize: 25))),
+                            Container(
+                                child: months <= 0
+                                    ? Text("")
+                                    : Text("$months أشهر",
+                                        textDirection: TextDirection.rtl,
+                                        style: TextStyle(fontSize: 25))),
+                            Container(
+                                child: days <= 0
+                                    ? Text("")
+                                    : Text("$days أيام",
+                                        textDirection: TextDirection.rtl,
+                                        style: TextStyle(fontSize: 25))),
+                          ],
                         ),
-                        image: DecorationImage(
-                          image: AssetImage("assets/dishes.jpeg"),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Text("أطباق مقترحة",
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                backgroundColor: Colors.white)),
-                      ),
-                    ),
-                    onTap: (() {
-                      Navigator.push(context,MaterialPageRoute(builder: (context) => Disheslist(monthsage: years*12+months,)));
-                    }),
+                      )
+                    ],
                   ),
-                )
-              ],
+                  //food
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Container(
+                        width: width,
+                        height: width / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage("assets/vegetables.jpg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text("الأطعمة المسموحة",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  backgroundColor: Colors.white)),
+                        ),
+                      ),
+                      onTap: (() {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => FoodList(monthsage: years*12+months,)));
+                      }),
+                    ),
+                  ),
+                  //dishes
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Container(
+                        width: width,
+                        height: width / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage("assets/dishes.jpeg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text("أطباق مقترحة",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  backgroundColor: Colors.white)),
+                        ),
+                      ),
+                      onTap: (() {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => Disheslist(monthsage: years*12+months,)));
+                      }),
+                    ),
+                  ),
+                  //Mouvements
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Container(
+                        width: width,
+                        height: width / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage("assets/mouvements.jpeg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text("الحركات المتوقعة",
+                              textDirection: TextDirection.rtl,
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  backgroundColor: Colors.white)),
+                        ),
+                      ),
+                      onTap: (() {
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => Mouvementslist(monthsage: years*12+months,)));
+                      }),
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         : Center(

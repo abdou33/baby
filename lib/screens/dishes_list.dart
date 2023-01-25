@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:baby/screens/dish_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -96,10 +97,9 @@ class _DisheslistState extends State<Disheslist> {
                       shrinkWrap: true,
                       itemCount: _items.length,
                       itemBuilder: (context, index) {
-                        return _items[index]["name"].contains(searchresult) ? GestureDetector(
+                        return _items[index]["name"].contains(searchresult) && age >= _items[index]["minmonth"] ? GestureDetector(
                           onTap: () {
-                            //Navigator.push(context,MaterialPageRoute(builder: (context) => FoodList(name: _items[index]["name"],
-                            //image: _items[index]["image"], minmonth: _items[index]["minmonth"], how: _items[index]["how"])));
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => Dishscreen( image: _items[index]["image"], name: _items[index]["name"],  month: _items[index]["minmonth"], ingrediants: _items[index]["ingrediants"].cast<String>(),  how: _items[index]["how"].cast<String>(), benefits: _items[index]["benefits"].cast<String>(),)));
                           },
                           child: Card(
                               margin: const EdgeInsets.all(10),

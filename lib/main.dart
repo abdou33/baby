@@ -33,23 +33,34 @@ class _MyAppState extends State<MyApp> {
     g = prefs.getString('gender');
 
     setState(() {
-    print("$d + $g");
-      if (d != 0 && d != null && g != "" && g != null) {
+      if (d != 0 && g != "") {
         doneloading = true;
+        if (d == null && g == null) {
+          firsttime = true;
+        } else if (d != null && g != null) {
         firsttime = false;
-      } else if (d == null) {}
+        }
+      }
+      print("$d + $g + $doneloading");
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Vazirmatn', appBarTheme: AppBarTheme(backgroundColor: g == "male" ? Colors.blue[100] : Colors.pink[100]), scaffoldBackgroundColor: g! == "male" ? Colors.blue[50] : Colors.pink[50], cardColor: g == "male" ? Colors.blue[100] : Colors.pink[100]),
+      theme: ThemeData(
+          fontFamily: 'Vazirmatn',
+          appBarTheme: AppBarTheme(
+              backgroundColor:
+                  g == "male" ? Colors.blue[100] : Colors.pink[100]),
+          scaffoldBackgroundColor:
+              g == "male" ? Colors.blue[50] : Colors.pink[50],
+          cardColor: g == "male" ? Colors.blue[100] : Colors.pink[100]),
       home: doneloading
           ? firsttime
               ? Swipe()
               : Home()
-          : CircularProgressIndicator(),
+          : Container(child: CircularProgressIndicator()),
     );
   }
 }
