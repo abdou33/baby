@@ -38,30 +38,32 @@ class _FoodListState extends State<FoodList> {
   Widget _searchTextField() {
     //add
     return TextField(
-        onChanged: (Text) {
-          setState(() {
-            searchresult = Text;
-          });
-        },
-        textAlign: TextAlign.right,
-        autofocus: true,
-        cursorColor: Colors.white,
-        textDirection: TextDirection.rtl,
-        style: const TextStyle(
-          color: Colors.white,
+      onChanged: (Text) {
+        setState(() {
+          searchresult = Text;
+        });
+      },
+      textAlign: TextAlign.right,
+      autofocus: true,
+      cursorColor: Colors.white,
+      textDirection: TextDirection.rtl,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+      ),
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration.collapsed(
+        hintText: 'بحث',
+        hintTextDirection: TextDirection.rtl,
+        hintStyle: TextStyle(
+          color: Colors.white60,
           fontSize: 20,
         ),
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration.collapsed(
-          hintText: 'بحث',
-          hintTextDirection: TextDirection.rtl,
-          hintStyle: TextStyle(
-            color: Colors.white60,
-            fontSize: 20,
-          ),
-        ),
+      ),
     );
   }
+
+  int searchresults = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -93,29 +95,31 @@ class _FoodListState extends State<FoodList> {
                       shrinkWrap: true,
                       itemCount: _items.length,
                       itemBuilder: (context, index) {
-                        return _items[index]["name"].contains(searchresult) ? Card(
-                            margin: const EdgeInsets.all(10),
-                            child: ListTile(
-                              leading: Image.asset(
-                                  age < _items[index]["minmonth"]
-                                      ? "assets/wrong.png"
-                                      : "assets/right.png"),
-                              trailing: Image.asset(_items[index]["image"]),
-                              title: Text(
-                                _items[index]["name"],
-                                textDirection: TextDirection.rtl,
-                              ),
-                              subtitle: age < _items[index]["minmonth"]
-                                  ? Text(
-                                      _items[index]["less"],
-                                      textDirection: TextDirection.rtl,
-                                    )
-                                  : Text(
-                                      _items[index]["more"],
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                            ),
-                          ) : Container();
+                        return _items[index]["name"].contains(searchresult)
+                            ? Card(
+                                margin: const EdgeInsets.all(10),
+                                child: ListTile(
+                                  leading: Image.asset(
+                                      age < _items[index]["minmonth"]
+                                          ? "assets/wrong.png"
+                                          : "assets/right.png"),
+                                  trailing: Image.asset(_items[index]["image"]),
+                                  title: Text(
+                                    _items[index]["name"],
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                  subtitle: age < _items[index]["minmonth"]
+                                      ? Text(
+                                          _items[index]["less"],
+                                          textDirection: TextDirection.rtl,
+                                        )
+                                      : Text(
+                                          _items[index]["more"],
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                ),
+                              )
+                            : SizedBox.shrink();
                       },
                     ),
                   )

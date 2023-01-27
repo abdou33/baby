@@ -54,19 +54,22 @@ class MouvementslistState extends State<Mouvementslist> {
                       shrinkWrap: true,
                       itemCount: _items.length,
                       itemBuilder: (context, index) {
-                        return age == _items[index]["month"] ? Card(
-                          margin: const EdgeInsets.all(10),
-                          child: ListTile(
-                            title: Container(
-                              width: 100,
-                              height: 100,
-                                child: Image.asset(_items[index]["image"])),
-                            subtitle: Text(
-                              _items[index]["description"],
-                              textDirection: TextDirection.rtl,
-                            ),
-                          ),
-                        ) : SizedBox.shrink();;
+                        return age == _items[index]["month"]
+                            ? Card(
+                                margin: const EdgeInsets.all(10),
+                                child: ListTile(
+                                  title: Container(
+                                      width: 100,
+                                      height: 100,
+                                      child:
+                                          Image.asset(_items[index]["image"])),
+                                  subtitle: Text(
+                                    _items[index]["description"],
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink();
                       },
                     ),
                   )

@@ -68,15 +68,23 @@ flutter:
     - assets/boardingscreen/image2.png
     - assets/boardingscreen/image3.png
     - assets/boardingscreen/arrow.png
+
     - assets/babyboy.png
     - assets/babygirl.png
+    - assets/star.png
+
     - assets/db/food.json
     - assets/db/dishes.json
     - assets/db/mouvements.json
-    - assets/vegetables.jpg
-    - assets/dishes.jpeg
+    - assets/db/vaccination.json
+    
     - assets/wrong.png
     - assets/right.png
+
+    - assets/vegetables.jpg
+    - assets/dishes.jpeg
+    - assets/vaccinations.png
+
     - assets/food/apple.jpeg
     - assets/mouvements.jpeg
     

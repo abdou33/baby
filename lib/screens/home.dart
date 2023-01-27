@@ -1,6 +1,10 @@
 import 'package:baby/screens/mouvements_list.dart';
+import 'package:baby/screens/vaccinations_list.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dishes_list.dart';
 import 'food_list.dart';
@@ -18,11 +22,32 @@ class _HomeState extends State<Home> {
   int years = 0;
   int months = 0;
   int days = 0;
+  List vacc = [];
+  List nextvacc = [" "];
 
   @override
   void initState() {
     getinfos();
+    readJson();
     super.initState();
+  }
+
+  // Fetch content from the json file
+  Future<void> readJson() async {
+    final String response =
+        await rootBundle.loadString('assets/db/vaccination.json');
+    final data = await json.decode(response);
+    setState(() {
+      vacc = data["items"];
+      for (int i = 0; i < vacc.length; i++) {
+        if (vacc[i]["month"] >= years * 12 + months) {
+          nextvacc[0] = vacc[i];
+          print(nextvacc[0]);
+          break;
+        }
+      }
+      print(nextvacc);
+    });
   }
 
   getinfos() async {
@@ -53,7 +78,7 @@ class _HomeState extends State<Home> {
     double width = MediaQuery.of(context).size.width;
     return gender != null
         ? Scaffold(
-          drawer: Drawer(),
+            drawer: const Drawer(),
             backgroundColor:
                 gender! == "male" ? Colors.blue[50] : Colors.pink[50],
             appBar: AppBar(
@@ -66,10 +91,10 @@ class _HomeState extends State<Home> {
                 children: [
                   Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: SizedBox(),
                       ),
-                      Text("عمر طفلك :",
+                      const Text("عمر طفلك :",
                           textDirection: TextDirection.rtl,
                           style: TextStyle(
                               fontSize: 25, fontWeight: FontWeight.bold)),
@@ -86,26 +111,125 @@ class _HomeState extends State<Home> {
                           children: [
                             Container(
                                 child: years <= 0
-                                    ? Text("")
+                                    ? const SizedBox.shrink()
                                     : Text("$years سنوات",
                                         textDirection: TextDirection.rtl,
-                                        style: TextStyle(fontSize: 25))),
+                                        style: const TextStyle(fontSize: 25))),
                             Container(
                                 child: months <= 0
-                                    ? Text("")
+                                    ? const SizedBox.shrink()
                                     : Text("$months أشهر",
                                         textDirection: TextDirection.rtl,
-                                        style: TextStyle(fontSize: 25))),
+                                        style: const TextStyle(fontSize: 25))),
                             Container(
                                 child: days <= 0
-                                    ? Text("")
+                                    ? const SizedBox.shrink()
                                     : Text("$days أيام",
                                         textDirection: TextDirection.rtl,
-                                        style: TextStyle(fontSize: 25))),
+                                        style: const TextStyle(fontSize: 25))),
                           ],
                         ),
                       )
                     ],
+                  ),
+                  // upcoming vaccinations
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: (() {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => FoodList(
+                        //               monthsage: years * 12 + months,
+                        //             )));
+                      }),
+                      child: Container(
+                        width: width,
+                        //height: width / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          image: const DecorationImage(
+                              image: AssetImage("assets/vaccinations.png"),
+                              fit: BoxFit.cover,
+                              opacity: 0.4),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text("التلقيح القادم",
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      backgroundColor: Colors.white)),
+                              Text(
+                                  "تلقيح " +
+                                      nextvacc[0]["month"].toString() +
+                                      " أشهر",
+                                  textDirection: TextDirection.rtl,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(8),
+                                  itemCount: nextvacc[0]["vaccs"].length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "\t" +
+                                                nextvacc[0]["vaccs"][index] +
+                                                "\n",
+                                            textDirection: TextDirection.rtl,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        Image.asset("assets/star.png",
+                                            width: 20, height: 20),
+                                      ],
+                                    );
+                                  }),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    VaccList()));
+                                      },
+                                      child: Text(
+                                        "قائمة التلقيحات",
+                                        style: TextStyle(
+                                          color: Colors.deepPurple[600],
+                                          fontSize: 15,
+                                        ),
+                                      )),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   //food
                   Padding(
@@ -119,13 +243,14 @@ class _HomeState extends State<Home> {
                           border: Border.all(
                             color: Colors.black,
                           ),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("assets/vegetables.jpg"),
                             fit: BoxFit.cover,
+                              opacity: 0.4
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
                           child: Text("الأطعمة المسموحة",
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
@@ -135,7 +260,12 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       onTap: (() {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => FoodList(monthsage: years*12+months,)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FoodList(
+                                      monthsage: years * 12 + months,
+                                    )));
                       }),
                     ),
                   ),
@@ -151,13 +281,14 @@ class _HomeState extends State<Home> {
                           border: Border.all(
                             color: Colors.black,
                           ),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("assets/dishes.jpeg"),
                             fit: BoxFit.cover,
+                              opacity: 0.4
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
                           child: Text("أطباق مقترحة",
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
@@ -167,7 +298,12 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       onTap: (() {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => Disheslist(monthsage: years*12+months,)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Disheslist(
+                                      monthsage: years * 12 + months,
+                                    )));
                       }),
                     ),
                   ),
@@ -183,13 +319,14 @@ class _HomeState extends State<Home> {
                           border: Border.all(
                             color: Colors.black,
                           ),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage("assets/mouvements.jpeg"),
                             fit: BoxFit.cover,
+                              opacity: 0.4
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
                           child: Text("الحركات المتوقعة",
                               textDirection: TextDirection.rtl,
                               style: TextStyle(
@@ -199,7 +336,12 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       onTap: (() {
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => Mouvementslist(monthsage: years*12+months,)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Mouvementslist(
+                                      monthsage: years * 12 + months,
+                                    )));
                       }),
                     ),
                   )
@@ -207,7 +349,7 @@ class _HomeState extends State<Home> {
               ),
             ),
           )
-        : Center(
+        : const Center(
             child: SizedBox(
                 height: 100, width: 100, child: CircularProgressIndicator()));
   }

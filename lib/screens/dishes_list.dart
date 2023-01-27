@@ -99,7 +99,7 @@ class _DisheslistState extends State<Disheslist> {
                       itemBuilder: (context, index) {
                         return _items[index]["name"].contains(searchresult) && age >= _items[index]["minmonth"] ? GestureDetector(
                           onTap: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context) => Dishscreen( image: _items[index]["image"], name: _items[index]["name"],  month: _items[index]["minmonth"], ingrediants: _items[index]["ingrediants"].cast<String>(),  how: _items[index]["how"].cast<String>(), benefits: _items[index]["benefits"].cast<String>(),)));
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => Dishscreen( image: _items[index]["image"], name: _items[index]["name"],  month: _items[index]["minmonth"], ingrediants: _items[index]["ingrediants"].cast<String>(),  how: _items[index]["how"].cast<String>(), benefits: _items[index]["benefits"].cast<String>())));
                           },
                           child: Card(
                               margin: const EdgeInsets.all(10),
@@ -111,7 +111,7 @@ class _DisheslistState extends State<Disheslist> {
                                 ),
                               ),
                             ),
-                        ) : Container();
+                        ) : SizedBox.shrink();
                       },
                     ),
                   )
