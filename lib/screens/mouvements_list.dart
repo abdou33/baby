@@ -62,7 +62,8 @@ class MouvementslistState extends State<Mouvementslist> {
                                       width: 100,
                                       height: 100,
                                       child:
-                                          Image.asset(_items[index]["image"])),
+                                          Image.asset("assets/star.png")),
+                                          //Image.asset(_items[index]["image"])),
                                   subtitle: Text(
                                     _items[index]["description"],
                                     textDirection: TextDirection.rtl,

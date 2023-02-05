@@ -119,7 +119,7 @@ class _FoodListState extends State<FoodList> {
                                         ),
                                 ),
                               )
-                            : SizedBox.shrink();
+                            : const SizedBox.shrink();
                       },
                     ),
                   )

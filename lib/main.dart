@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
         firsttime = false;
         }
       }
-      print("$d + $g + $doneloading");
+      //print("$d + $g + $doneloading");
     });
   }
 

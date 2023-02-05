@@ -1,5 +1,6 @@
 import 'package:baby/screens/mouvements_list.dart';
 import 'package:baby/screens/vaccinations_list.dart';
+import 'package:baby/widgets/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -78,7 +79,7 @@ class _HomeState extends State<Home> {
     double width = MediaQuery.of(context).size.width;
     return gender != null
         ? Scaffold(
-            drawer: const Drawer(),
+            drawer: MyDrawer(gender: gender!),
             backgroundColor:
                 gender! == "male" ? Colors.blue[50] : Colors.pink[50],
             appBar: AppBar(
