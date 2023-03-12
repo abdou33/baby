@@ -2,11 +2,13 @@ import 'package:baby/screens/mouvements_list.dart';
 import 'package:baby/screens/vaccinations_list.dart';
 import 'package:baby/widgets/Drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../helper/ad_helper.dart';
 import 'dishes_list.dart';
 import 'food_list.dart';
 
@@ -26,11 +28,44 @@ class _HomeState extends State<Home> {
   List vacc = [];
   List nextvacc = [" "];
 
+  // TODO: Add _bannerAd
+  BannerAd? _bannerAd;
+
+  double? screenwidth = null;
+  double? adheight = null;
+
   @override
   void initState() {
     getinfos();
     readJson();
+
+    // TODO: Load a banner ad
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+            adheight = _bannerAd!.size.height.toDouble();
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          ad.dispose();
+        },
+      ),
+    ).load();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: Dispose a BannerAd object
+    _bannerAd?.dispose();
+
+    super.dispose();
   }
 
   // Fetch content from the json file
@@ -151,82 +186,94 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
+                            width: 2,
                             color: Colors.black,
                           ),
                           image: const DecorationImage(
                               image: AssetImage("assets/vaccinations.png"),
                               fit: BoxFit.cover,
-                              opacity: 0.4),
+                              opacity: 0.45),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text("التلقيح القادم",
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                      fontSize: 25,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              width: 2,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text("التلقيح القادم",
+                                    textDirection: TextDirection.rtl,
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                        backgroundColor: Colors.white)),
+                                Text(
+                                    "تلقيح " +
+                                        nextvacc[0]["month"].toString() +
+                                        " أشهر",
+                                    textDirection: TextDirection.rtl,
+                                    style: TextStyle(
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      backgroundColor: Colors.white)),
-                              Text(
-                                  "تلقيح " +
-                                      nextvacc[0]["month"].toString() +
-                                      " أشهر",
-                                  textDirection: TextDirection.rtl,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.all(8),
-                                  itemCount: nextvacc[0]["vaccs"].length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            "\t" +
-                                                nextvacc[0]["vaccs"][index] +
-                                                "\n",
-                                            textDirection: TextDirection.rtl,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    )),
+                                ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(8),
+                                    itemCount: nextvacc[0]["vaccs"].length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              "\t" +
+                                                  nextvacc[0]["vaccs"][index] +
+                                                  "\n",
+                                              textDirection: TextDirection.rtl,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Image.asset("assets/star.png",
-                                            width: 20, height: 20),
-                                      ],
-                                    );
-                                  }),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    VaccList()));
-                                      },
-                                      child: Text(
-                                        "قائمة التلقيحات",
-                                        style: TextStyle(
-                                          color: Colors.deepPurple[600],
-                                          fontSize: 15,
-                                        ),
-                                      )),
-                                ],
-                              )
-                            ],
+                                          Image.asset("assets/star.png",
+                                              width: 20, height: 20),
+                                        ],
+                                      );
+                                    }),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      VaccList()));
+                                        },
+                                        child: Text(
+                                          "قائمة التلقيحات",
+                                          style: TextStyle(
+                                            color: Colors.deepPurple[600],
+                                            fontSize: 15,
+                                          ),
+                                        )),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -242,22 +289,31 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
+                            width: 2,
                             color: Colors.black,
                           ),
                           image: const DecorationImage(
-                            image: AssetImage("assets/vegetables.jpg"),
-                            fit: BoxFit.cover,
-                              opacity: 0.4
-                          ),
+                              image: AssetImage("assets/vegetables.jpg"),
+                              fit: BoxFit.cover,
+                              opacity: 0.4),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text("الأطعمة المسموحة",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  backgroundColor: Colors.white)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              width: 2,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text("الأطعمة المسموحة",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    backgroundColor: Colors.white)),
+                          ),
                         ),
                       ),
                       onTap: (() {
@@ -280,22 +336,30 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Colors.black,
+                            width: 2,
                           ),
                           image: const DecorationImage(
-                            image: AssetImage("assets/dishes.jpeg"),
-                            fit: BoxFit.cover,
-                              opacity: 0.4
-                          ),
+                              image: AssetImage("assets/dishes.jpeg"),
+                              fit: BoxFit.cover,
+                              opacity: 0.4),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text("أطباق مقترحة",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  backgroundColor: Colors.white)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              width: 2,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text("أطباق مقترحة",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    backgroundColor: Colors.white)),
+                          ),
                         ),
                       ),
                       onTap: (() {
@@ -318,22 +382,31 @@ class _HomeState extends State<Home> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
+                            width: 2,
                             color: Colors.black,
                           ),
                           image: const DecorationImage(
-                            image: AssetImage("assets/mouvements.jpeg"),
-                            fit: BoxFit.cover,
-                              opacity: 0.4
-                          ),
+                              image: AssetImage("assets/mouvements.jpeg"),
+                              fit: BoxFit.cover,
+                              opacity: 0.4),
                         ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: Text("الحركات المتوقعة",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  backgroundColor: Colors.white)),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              width: 2,
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text("الحركات المتوقعة",
+                                textDirection: TextDirection.rtl,
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    backgroundColor: Colors.white)),
+                          ),
                         ),
                       ),
                       onTap: (() {
@@ -348,6 +421,20 @@ class _HomeState extends State<Home> {
                   )
                 ],
               ),
+            ),
+            bottomNavigationBar: SizedBox(
+              height: adheight != null ? adheight : 0,
+              child: // TODO: Display a banner when ready
+                  _bannerAd != null
+                      ? Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            width: width,
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          ),
+                        )
+                      : SizedBox.shrink(),
             ),
           )
         : const Center(

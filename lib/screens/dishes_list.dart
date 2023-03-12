@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../helper/ad_helper.dart';
 
 class Disheslist extends StatefulWidget {
   const Disheslist({super.key, required this.monthsage});
@@ -32,11 +35,36 @@ class _DisheslistState extends State<Disheslist> {
     });
   }
 
+  // TODO: Add _bannerAd
+  BannerAd? _bannerAd;
+
+  double? screenwidth = null;
+  double? adheight = null;
+
   @override
   void initState() {
     super.initState();
     // Call the readJson method when the app starts
     readJson();
+
+    // TODO: Load a banner ad
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+            adheight = _bannerAd!.size.height.toDouble();
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          ad.dispose();
+        },
+      ),
+    ).load();
   }
 
   Widget _searchTextField() {
@@ -119,6 +147,20 @@ class _DisheslistState extends State<Disheslist> {
           ],
         ),
       ),
+      bottomNavigationBar: SizedBox(
+              height: adheight != null ? adheight : 0,
+              child: // TODO: Display a banner when ready
+                  _bannerAd != null
+                      ? Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            width:  _bannerAd!.size.width.toDouble(),
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+            ),
     );
   }
 }

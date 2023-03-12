@@ -46,6 +46,17 @@ class MouvementslistState extends State<Mouvementslist> {
         padding: const EdgeInsets.all(1),
         child: Column(
           children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Text(
+                "الحركات المتوقعة في عمر $age أشهر",
+                textDirection: TextDirection.rtl,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             // Display the data loaded from sample.json
             _items.isNotEmpty
                 ? Expanded(

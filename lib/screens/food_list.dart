@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
+import '../helper/ad_helper.dart';
 
 class FoodList extends StatefulWidget {
   final int monthsage;
@@ -27,12 +30,45 @@ class _FoodListState extends State<FoodList> {
       _items = data["items"];
     });
   }
+  // TODO: Add _bannerAd
+  BannerAd? _bannerAd;
+
+  double? screenwidth = null;
+  double? adheight = null;
 
   @override
   void initState() {
     super.initState();
     // Call the readJson method when the app starts
     readJson();
+
+    // TODO: Load a banner ad
+    BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _bannerAd = ad as BannerAd;
+            adheight = _bannerAd!.size.height.toDouble();
+          });
+        },
+        onAdFailedToLoad: (ad, err) {
+          print('Failed to load a banner ad: ${err.message}');
+          ad.dispose();
+        },
+      ),
+    ).load();
+  }
+
+
+  @override
+  void dispose() {
+    // TODO: Dispose a BannerAd object
+    _bannerAd?.dispose();
+
+    super.dispose();
   }
 
   Widget _searchTextField() {
@@ -98,26 +134,62 @@ class _FoodListState extends State<FoodList> {
                         return _items[index]["name"].contains(searchresult)
                             ? Card(
                                 margin: const EdgeInsets.all(10),
-                                child: ListTile(
+                                child: Column(
+                                  children: [
+                                    ListTile(
                                   leading: Image.asset(
+                                    width: 50,
                                       age < _items[index]["minmonth"]
                                           ? "assets/wrong.png"
                                           : "assets/right.png"),
-                                  trailing: Image.asset(_items[index]["image"]),
+                                  trailing: Image.asset(_items[index]["image"], width: 50,),
                                   title: Text(
                                     _items[index]["name"],
                                     textDirection: TextDirection.rtl,
                                   ),
                                   subtitle: age < _items[index]["minmonth"]
-                                      ? Text(
-                                          _items[index]["less"],
+                                            ? Column(
+                                                children: [
+                                                  Text(
+                                                    "بدءا من " +
+                                                        _items[index]
+                                                                ["minmonth"]
+                                                            .toString() +
+                                                        " أشهر \n",
                                           textDirection: TextDirection.rtl,
-                                        )
-                                      : Text(
-                                          _items[index]["more"],
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ],
+                                              )
+                                            : Column(
+                                                children: [
+                                                  Text(
+                                                    "بدءا من " +
+                                                        _items[index]
+                                                                ["minmonth"]
+                                                            .toString() +
+                                                        " أشهر \n",
                                           textDirection: TextDirection.rtl,
-                                        ),
-                                ),
+                                                    style: TextStyle(
+                                                        color: Colors.black
+                                          ),
+                                                  ),
+                                                ],
+                                              )),
+                                    Container(
+                                      child: age < _items[index]["minmonth"]
+                                          ? Text(
+                                              _items[index]["less"],
+                                              textDirection: TextDirection.rtl,
+                                            )
+                                          : Text(
+                                              _items[index]["more"],
+                                              textDirection: TextDirection.rtl,
+                                            ),
+                                    )
+                                  ],
+                                )
                               )
                             : const SizedBox.shrink();
                       },
@@ -127,6 +199,20 @@ class _FoodListState extends State<FoodList> {
           ],
         ),
       ),
+      bottomNavigationBar: SizedBox(
+              height: adheight != null ? adheight : 0,
+              child: // TODO: Display a banner when ready
+                  _bannerAd != null
+                      ? Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            width:  _bannerAd!.size.width.toDouble(),
+                            height: _bannerAd!.size.height.toDouble(),
+                            child: AdWidget(ad: _bannerAd!),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+            ),
     );
   }
 }
